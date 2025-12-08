@@ -13,6 +13,7 @@ export class LoginPage extends CommonPage {
     private readonly lblLoginMsg = this.page.getByRole('heading', { name: 'Đăng nhập thành công' });
     private readonly lblAccountValidationMsg = this.page.locator('#taiKhoan-helper-text');
     private readonly lblPasswordValidationMsg = this.page.locator('#matKhau-helper-text');
+    private readonly lblLoginValidationMsg = this.page.getByText('Tài khoản hoặc mật khẩu không');
     // readonly lblAccountValidationMsg = this.page.locator('')
 
     getLblLoginMsgLocator() : Locator{
@@ -32,8 +33,11 @@ export class LoginPage extends CommonPage {
     }
 
     async login(account: string, password: string){
+        console.log('Entering username:', account);
         await this.enterAccount(account);
+        console.log('Entering password:', password);
         await this.enterPassword(password);
+        console.log('Submitting login form...');
         await this.clickLogin();
     }
 }

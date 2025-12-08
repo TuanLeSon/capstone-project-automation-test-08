@@ -32,6 +32,10 @@ export default defineConfig({
     /* Base URL to use in actions like `await page.goto('')`. */
     baseURL: 'https://demo1.cybersoft.edu.vn',
     screenshot: 'only-on-failure', //screenshot configuration
+    httpCredentials: {
+      username: '2025111',
+      password: '123456',
+    },
     /* Collect trace when retrying the failed test. See https://playwright.dev/docs/trace-viewer */
     trace: 'on-first-retry',
     actionTimeout: 10000, //timeout for each action (default is 0ms)

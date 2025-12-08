@@ -21,7 +21,7 @@ test.describe('Login Test Feature', () => {
         //Step 4: Enter password
         //Step 5: Click on Đăng nhập button
 
-        await loginPage.login('202511', '123456');
+        await loginPage.login('2025111', '123456');
         await expect(loginPage.getLblLoginMsgLocator()).toBeVisible();
 
         //VPw: User profile displays on the top right
