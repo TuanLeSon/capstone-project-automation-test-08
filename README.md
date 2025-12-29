@@ -104,15 +104,6 @@ Use for test data e.g., random email, password.
 ✔ Some flows like redirect after booking may be known bugs in AUT — tests may catch them intentionally.
 ✔ Adjust selectors in Page Objects if UI changes.
 
-📌 Contribution
-
-If you want to extend:
-
-Add more modules under tests/
-
-Create new PageObjects in src/pages/
-
-Add API tests under tests/api
 
 ❤️ Thank you!
 
