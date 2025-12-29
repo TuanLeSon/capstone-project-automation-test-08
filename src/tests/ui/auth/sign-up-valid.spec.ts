@@ -2,6 +2,7 @@ import { test, expect } from '@playwright/test';
 import { SignupPage } from '../../../ui/pages/auth/SignupPage';
 import { WarningMessages } from '../../../shared/constants/WarningMessages';
 import { testUser } from '../../../helpers/testUsers';
+import { generateUser } from '../../../shared/generators/UserGenerator';
 
 
 test.describe('Signup Validation', () => {
@@ -22,7 +23,7 @@ test.describe('Signup Validation', () => {
 
   test('Invalid email format → email validation visible', async ({ page }) => {
     const signup = new SignupPage(page);
-    signup.open();
+    await signup.open();
 
     await signup.email.fill('abc@');
     await signup.submit.click();
@@ -32,7 +33,7 @@ test.describe('Signup Validation', () => {
 
   test('Password too short → error message', async ({ page }) => {
     const signup = new SignupPage(page);
-    signup.open();
+    await signup.open();
 
     await signup.password.fill('123');
     await signup.submit.click();
@@ -42,7 +43,7 @@ test.describe('Signup Validation', () => {
 
   test('Confirm password not match → show mismatch error', async ({ page }) => {
     const signup = new SignupPage(page);
-    signup.open();
+    await signup.open();
 
     await signup.password.fill('123456');
     await signup.confirmPassword.fill('aaa222');
@@ -69,7 +70,7 @@ test.describe('Signup Validation', () => {
 
   test('Username with numbers → show validation error', async ({ page }) => {
     const signup = new SignupPage(page);
-    signup.open();
+    await signup.open();
 
     await signup.fullName.fill('Nguyen Van 123');
     await signup.submit.click();
@@ -79,11 +80,12 @@ test.describe('Signup Validation', () => {
 
   test('Duplicate email → show duplicate error', async ({ page }) => {
     const signup = new SignupPage(page);
-    signup.open();
-    await signup.username.fill('newuser');
-    await signup.fullName.fill('Nguyen Van A');
-    await signup.password.fill('password123');
-    await signup.confirmPassword.fill('password123');
+    await signup.open();
+    const u = generateUser('ui');
+    await signup.username.fill(u.username);
+    await signup.fullName.fill(u.fullName);
+    await signup.password.fill(u.password);
+    await signup.confirmPassword.fill(u.confirmPassword);
     await signup.email.fill(testUser.email); // email đã tồn tại
     await signup.submit.click();
     await expect(signup.alertMsg).toContainText(WarningMessages.DUPLICATE_EMAIL_MSG);
@@ -91,12 +93,13 @@ test.describe('Signup Validation', () => {
 
   test('Duplicate account → show duplicate error', async ({ page }) => {
     const signup = new SignupPage(page);
-    signup.open();
+    await signup.open();
+    const u = generateUser('ui');
     await signup.username.fill(testUser.account); // tài khoản đã tồn tại
-    await signup.fullName.fill('Nguyen Van A');
-    await signup.password.fill('password123');
-    await signup.confirmPassword.fill('password123');
-    await signup.email.fill(testUser.email); // email đã tồn tại
+    await signup.fullName.fill(u.fullName);
+    await signup.password.fill(u.password);
+    await signup.confirmPassword.fill(u.confirmPassword);
+    await signup.email.fill(testUser.email);
     await signup.submit.click();
     await expect(signup.alertMsg).toContainText(WarningMessages.DUPLICATE_EMAIL_MSG);
   });
@@ -105,12 +108,13 @@ test.describe('Signup Validation', () => {
     const signup = new SignupPage(page);
     await page.goto('/sign-up');
 
-    const id = Date.now();
-    await signup.username.fill(`user${id}`);
-    await signup.fullName.fill('Nguyễn Văn Demo');
-    await signup.email.fill(`user${id}@gmail.com`);
-    await signup.password.fill('123456');
-    await signup.confirmPassword.fill('123456');
+    const u = generateUser('abc');
+    // const id = Date.now();
+    await signup.username.fill(u.username);
+    await signup.fullName.fill(u.fullName);
+    await signup.email.fill(u.email);
+    await signup.password.fill(u.password);
+    await signup.confirmPassword.fill(u.confirmPassword);
     await signup.submit.click();
     await expect(signup.signUpMsg).toBeVisible();
   });

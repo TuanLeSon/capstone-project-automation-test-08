@@ -6,9 +6,9 @@ export const WarningMessages = {
     NO_CINEMA_MSG: 'Vui lòng chọn rạp',
     NO_DATE_MSG: 'Vui lòng chọn ngày giờ chiếu',
     NO_SEAT_TITLE: 'Bạn chưa chọn ghế',
-    NO_SEAT_MSG: 'Bạn chưa chọn ghế',
+    NO_SEAT_MSG: 'Vui lòng chọn ghế ?',
     NO_LOGIN_TITLE: 'Bạn chưa đăng nhập',
-    NO_LOGIN_MSG: 'Bạn chưa đăng nhập',
+    NO_LOGIN_MSG: 'Bạn có muốn đăng nhập không ?',
     SUCCESS_BOOKING_TITLE: 'Đặt vé thành công',
     SUCCESS_BOOKING_MSG: 'Kiểm tra trong lịch sử đặt vé',
     MANDATORY_MSG: 'Đây là trường bắt buộc !',
@@ -19,5 +19,6 @@ export const WarningMessages = {
     USER_NAME_VALIDATION_MSG: 'Họ và tên không chứa số !',
     LOGOUT_SUCCESS_MSG: 'Đăng xuất thành công',
     LOGOUT_CONFIRM_MSG: 'Bạn có muốn đăng xuất ?',
+    PHONE_VALIDATION_MSG: 'Vui lòng nhập số điện thoại',
   } as const;
   

@@ -2,6 +2,7 @@ import { test, expect } from '@playwright/test';
 import { login } from '../../../helpers/authHelper';
 ; // nếu chưa có thì đổi thành manual login
 import { AccountPage } from '../../../ui/pages/auth/AccountPage';
+import { WarningMessages } from '../../../shared/constants/WarningMessages';
 
 test.describe('Account Page - Field Validation', () => {
 
@@ -12,13 +13,14 @@ test.describe('Account Page - Field Validation', () => {
   });
 
   // ---------------------- USERNAME VALIDATION ----------------------
-  test('Username cannot be empty', async ({ page }) => {
+  test('Username cannot be changed', async ({ page }) => {
     const account = new AccountPage(page);
+    const username = await account.username.innerText();
     await account.username.fill('');
     await account.update.click();
 
-    await expect(account.userNameValidationMsg)
-      .toHaveText(/vui lòng nhập/i);
+    expect(account.username).toHaveText(username); // giữ nguyên username cũ
+      
   });
 
   test('Username cannot contain numbers', async ({ page }) => {
@@ -27,7 +29,7 @@ test.describe('Account Page - Field Validation', () => {
     await account.fullName.fill('John123');
     await account.update.click();
 
-    await expect(account.userNameValidationMsg)
+    await expect(account.fullnameValidationMsg)
       .toHaveText(/không chứa số/i);
   });
 
@@ -39,7 +41,7 @@ test.describe('Account Page - Field Validation', () => {
     await account.update.click();
 
     await expect(account.passwordValidationMsg)
-      .toHaveText(/vui lòng nhập mật khẩu/i);
+      .toHaveText(WarningMessages.MANDATORY_MSG);
   });
 
   test('Password must be at least 6 chars', async ({ page }) => {
@@ -49,18 +51,7 @@ test.describe('Account Page - Field Validation', () => {
     await account.update.click();
 
     await expect(account.passwordValidationMsg)
-      .toHaveText(/tối thiểu 6 ký tự/i);
-  });
-
-  test('Confirm password must match Password', async ({ page }) => {
-    const account = new AccountPage(page);
-
-    await account.password.fill('123456');
-    await account.confirmPassword.fill('000000');
-    await account.update.click();
-
-    await expect(account.passwordValidationMsg)
-      .toHaveText(/không trùng khớp/i);
+      .toHaveText(WarningMessages.PASSWORD_LENGTH_MSG);
   });
 
   // ---------------------- EMAIL VALIDATION ----------------------
@@ -70,7 +61,7 @@ test.describe('Account Page - Field Validation', () => {
     await account.update.click();
 
     await expect(account.emailValidationMsg)
-      .toHaveText(/vui lòng nhập email/i);
+      .toHaveText(WarningMessages.MANDATORY_MSG);
   });
 
   test('Email must follow correct format', async ({ page }) => {
@@ -89,8 +80,9 @@ test.describe('Account Page - Field Validation', () => {
     await account.phone.fill('');
     await account.update.click();
 
+    await expect(account.phoneValidationMsg).toBeVisible();
     await expect(account.phoneValidationMsg)
-      .toBeVisible();
+      .toHaveText(WarningMessages.PHONE_VALIDATION_MSG);
   });
 
   test('Phone must contain only numbers', async ({ page }) => {

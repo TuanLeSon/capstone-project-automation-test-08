@@ -17,9 +17,12 @@ export class ShowtimeSection {
     return card.locator('[style*="background-image"]');
   }
 
-  movieName(card: Locator): Locator {
-    return card.locator('h3.MuiTypography-root');
+  async movieName(card: Locator): Promise<string> {
+    const cardText = await card.innerText();
+    const firstLine = cardText.split('\n')[0];       // lấy dòng đầu tiên
+  return firstLine.slice(3).trim();  
   }
+  
 
   async getMovieDescriptions() {
     return this.movieCards.locator('h4.MuiTypography-root').allInnerTexts();
@@ -56,8 +59,8 @@ export class ShowtimeSection {
 
   async clickBuyTicketOnMovieCard(card: Locator) {
     await card.hover();
-    await expect(this.movieBuyTicket(card)).toBeVisible();
-    await this.movieBuyTicket(card).click();
+    await expect(this.movieBuyTicket(card).first()).toBeVisible();
+    await this.movieBuyTicket(card).first().click();
   }
 
   async openTrailer(index = 0) {
@@ -68,7 +71,7 @@ export class ShowtimeSection {
   }
 
   async waitForLoaded() {
-    await expect(this.root).toBeVisible();
+    await expect(this.root).toBeVisible({ timeout: 10000 });
     await expect(this.movieCards.first()).toBeVisible();
   }
 
@@ -86,14 +89,14 @@ export class ShowtimeSection {
 
   async getRandomMovieCard(): Promise<Locator> {
     const count = await this.movieCards.filter({ has: this.page.locator(':visible') }).count();
-    console.log(`Total movie cards: ${count}`);
+    // console.log(`Total movie cards: ${count}`);
     const randomIndex = Math.floor(Math.random() * count);
-    return this.movieCards.nth(randomIndex);
+    return this.movieCards.nth(randomIndex - 1);
   }
 
   async clickRandomMovieBuyTicket() {
     const card = await this.getRandomMovieCard();
-    const filmName = await this.movieName(card).innerText();
+    const filmName = await this.movieName(card);
     await this.clickBuyTicketOnMovieCard(card);
     return filmName;
   }

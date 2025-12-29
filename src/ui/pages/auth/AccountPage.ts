@@ -23,11 +23,11 @@ export class AccountPage extends CommonPage {
     get close() { return this.page.getByRole('button', { name: 'Đóng' }); }
 
     get passwordValidationMsg() { return this.page.locator('#matKhau-helper-text'); }
-    get userNameValidationMsg() { return this.page.locator('#hoTen-helper-text'); }
+    get fullnameValidationMsg() { return this.page.locator('#hoTen-helper-text'); }
     get emailValidationMsg() { return this.page.locator('#email-helper-text'); }
-    get phoneValidationMsg() { return this.page.getByText('Vui lòng nhập số điện thoại'); }
+    get phoneValidationMsg() { return this.page.locator('#soDt-helper-text'); }
     get ticketHistory() { return this.page.getByRole('heading', { name: 'Lịch sử đặt vé' }); }
-    get tickets() { return this.page.getByText('Ngày đặt: 16-11-2025 | 14:37T'); }
+    // get tickets() { return this.page.getByText('Ngày đặt: 16-11-2025 | 14:37T'); }
     get root() { return this.page.getByRole('main'); }
     get name() { return this.root.locator('.display-name'); }
     async waitForLoaded() { await expect(this.root).toBeVisible(); }
@@ -49,13 +49,16 @@ export class AccountPage extends CommonPage {
         await expect(this.bookingItem(movie)).toBeVisible();
     }
 
-    async updateAccount(data) {
-        await this.fill(this.password, data.password);
-        await this.fill(this.fullName, data.fullName);
-        await this.fill(this.email, data.email);
-        await this.fill(this.phone, data.phone);
-        await this.click(this.update);
-    }
+    async updateAccount(password?: string, fullName?: string, email?: string, phone?: string) {
+  
+        if (password) await this.password.fill(password);
+        if (fullName) await this.fullName.fill(fullName);
+        if (email)    await this.email.fill(email);
+        if (phone)    await this.phone.fill(phone);
+      
+        await this.update.click();
+      }
+      
 
     async open() {
         await this.smartNavigate('/account', '/account');

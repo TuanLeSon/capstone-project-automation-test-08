@@ -15,7 +15,7 @@ export class SearchSection {
   }
 
   get cinema(): Locator {
-    return this.page.locator('select[name="cinema"]');
+    return this.page.locator('select[name="cinema"]').first();
   }
 
   get date(): Locator {
@@ -59,12 +59,18 @@ export class SearchSection {
       return await this.filmOptions().count();
     }).toBeGreaterThan(1);
 
-    const value = await this.filmOptions().nth(1).getAttribute('value');
+    const options = this.filmOptions(); // Locator list <option>
+    const count = await options.count();
+
+    if (count === 0) throw new Error("No film options available!");
+
+    const index = Math.floor(Math.random() * count);
+    const value = await options.nth(index).getAttribute('value');
     await this.film.selectOption(value!);
   }
 
   async selectAnyCinema() {
-    await this.cinema.scrollIntoViewIfNeeded();
+    // await this.cinema.scrollIntoViewIfNeeded();
     await this.cinema.hover();
     await this.cinema.click();
     await expect.poll(async () => {

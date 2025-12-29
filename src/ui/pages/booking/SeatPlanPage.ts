@@ -9,15 +9,15 @@ export class SeatPlanPage extends BasePage {
   constructor(page: Page) { super(page); }
 
   /** Full flow đi từ homepage */
-  async gotoViaHome(movieIndex = 0) {
+  async gotoViaHome() {
     const home = new HomePage(this.page);
     await home.open();
-
     const showtime = home.showtime;
-    await showtime.openFilmDetailByIndex(movieIndex);
+    
+    await showtime.clickRandomMovieBuyTicket();
     const movie = new MovieDetailPage(this.page);
     await movie.waitForLoaded();
-    await movie.openPurchaseFromSection(); // Click suất chiếu bất kỳ
+    await movie.openRandomShowtime();
   }
 
   get unavailableSeats() {
@@ -33,7 +33,8 @@ export class SeatPlanPage extends BasePage {
 
   // Ghế còn trống
   get availableSeats() {
-    return this.page.locator('button.MuiButton-root:not([disabled])');
+    return this.page.locator('button.MuiButton-root:not([disabled])')
+    .filter({ hasText: /\d+/ });
   }
 
   // Ghế đang chọn (style inline background-color: green)
@@ -45,11 +46,11 @@ export class SeatPlanPage extends BasePage {
   //   return this.page.getByRole('button', { name: `${label}` });
   // }
 
-  async pickFirstAvailableSeat() {
-    const seat = this.availableSeats.first();
+  async pickAvailableSeat(index: number) {
+    const seat = this.availableSeats.nth(index);
     const seatLabel = await seat.innerText();
     await seat.click();
-    await expect(this.selectedSeats).toContainText(seatLabel);
+    await expect(this.selectedSeats.getByText(seatLabel)).toBeVisible();
     return seatLabel;
   }
 
@@ -103,12 +104,12 @@ export class SeatPlanPage extends BasePage {
     return this.page.locator('button.MuiButton-root'); // sẽ refine sau
   }
 
-  waitForLoaded(): Promise<void> {
-    return expect(this.btnBook).toBeVisible({ timeout: 5000 });
+  async waitForLoaded(){
+    await expect(this.btnBook).toBeVisible({ timeout: 5000 });
   }
-  seat(index: number): Locator {
-    return this.seats.nth(index);
-  }
+  // seat(index: number): Locator {
+  //   return this.seats.nth(index);
+  // }
 
   get ticketPanel(): Locator {
     return this.page.locator('.ticket-info'); 
@@ -116,7 +117,7 @@ export class SeatPlanPage extends BasePage {
 
   // --- actions ---
   async selectSeat(index: number) {
-    await this.seat(index).click();
+    await this.getSeat(index).click();
   }
 
   async expectSeatSelected(name: string) {
@@ -127,13 +128,22 @@ export class SeatPlanPage extends BasePage {
 
   async clickRandomlyFromAvailableSeats(seats: Locator) {
     const count = await seats.count();
+    if (count === 0) {
+      throw new Error('No available seats to select.');
+    }
     const index = Math.floor(Math.random() * count);
     const lastSelectedSeat = await seats.nth(index).textContent(); // lưu số ghế
+    if (!lastSelectedSeat) throw new Error('Selected seat has no text'); // tránh null propagate
     await seats.nth(index).click();
     return lastSelectedSeat;
   }
 
-  getSeat(seatLabel: string) {
-    return this.seat(parseInt(seatLabel) - 1); // giả sử label ghế là số từ 1-n tương ứng index 0-(n-1)
+  getSeat(seatId: string | number): Locator {
+    if (typeof seatId === 'number') {
+      return this.seats.nth(seatId - 1); // giả sử label ghế là số từ 1-n tương ứng index 0-(n-1)
+    } else {
+      return this.seats.nth(parseInt(seatId) - 1); // giả sử label ghế là số từ 1-n tương ứng index 0-(n-1)
+    }
+    // return this.seat(parseInt(seatLabel) - 1); // giả sử label ghế là số từ 1-n tương ứng index 0-(n-1)
   }
 }

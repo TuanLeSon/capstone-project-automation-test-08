@@ -26,27 +26,13 @@ export class MovieDetailPage {
   get buyTicketHeaderBtn(): Locator {
     return this.page.getByText(/Mua vé|Đặt Vé|Mua Vé/i);
   }
-
-  get trailerModal(): Locator {
-    return this.page.locator('#trailerModal');
-  }
   // ===========================
   // B. Showtime Section
   // ===========================
   get showtimeRoot(): Locator {
-    return this.page.locator('.modal-video');
+    return this.page.locator('#cinemaList');
   }
 
-  // get showtimeTitle(): Locator {
-  //   return this.showtimeRoot.getByText(/Lịch Chiếu|Showtime/i);
-  // }
-  // get cinemaTabList(): Locator {
-  //   return this.showtimeRoot.locator('.MuiAvatar-img');
-  // }
-
-  closeTrailer() {
-    return this.page.locator('.modal-video-close-btn').click();
-  }
 
   get cinemaTabs(): Locator {
     return this.showtimeRoot.locator('.MuiAvatar-img'); // mỗi rạp là 1 tab

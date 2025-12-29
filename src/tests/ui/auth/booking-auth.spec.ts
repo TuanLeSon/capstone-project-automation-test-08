@@ -6,9 +6,7 @@ import { SeatPlanPage } from '../../../ui/pages/booking/SeatPlanPage';
 import { ShowtimeSection } from '../../../ui/sections/ShowtimeSection';
 import { LoginPage } from '../../../ui/pages/auth/LoginPage';
 import { WarningMessages } from '../../../shared/constants/WarningMessages';
-
-
-
+import { testUser } from '../../../helpers/testUsers';
 
 test('Navigate to seat plan when clicking a showtime (no login required)', async ({ page }) => {
     const home = new HomePage(page);
@@ -18,7 +16,7 @@ test('Navigate to seat plan when clicking a showtime (no login required)', async
     await home.clickRandomlyFrom(home.showtime.movieCards);
   
     const movie = new MovieDetailPage(page);
-    await movie.openPurchaseFromSection();         // Click suất chiếu
+    await movie.openRandomShowtime();         // Click suất chiếu
   
     const seat = new SeatPlanPage(page);
     await seat.waitForLoaded();                    // seat-map visible
@@ -44,12 +42,12 @@ test('Navigate to seat plan when clicking a showtime (no login required)', async
     const showtime = new ShowtimeSection(page);
   
     await login.open();
-    await login.submitLogin('2025111', '123456');
+    await login.submitLogin(testUser.account, testUser.password);
     await showtime.waitForLoaded();
     await showtime.clickRandomMovieBuyTicket();
   
     const movie = new MovieDetailPage(page);
-    await movie.openPurchaseFromSection();
+    await movie.openRandomShowtime();
   
     const seat = new SeatPlanPage(page);
     await seat.book();                             // Click ĐẶT VÉ
@@ -65,22 +63,25 @@ test('Navigate to seat plan when clicking a showtime (no login required)', async
     const showtime = new ShowtimeSection(page);
   
     await home.open();
+    await showtime.waitForLoaded();
     await showtime.clickRandomMovieBuyTicket();
-  
+    
     const movie = new MovieDetailPage(page);
-    await movie.openPurchaseFromSection();
-  
+    await movie.waitForLoaded();
+    await movie.openRandomShowtime();
+
     const seat = new SeatPlanPage(page);
+    seat.waitForLoaded();
     await seat.book();                             // chưa chọn ghế
   
     const dialog = new WarningDialog(page);
     await dialog.waitForLoaded();
     await dialog.expectMessage(WarningMessages.NO_LOGIN_TITLE, WarningMessages.NO_LOGIN_MSG);
     await dialog.approveButton.click();            // Đồng ý
-  
+    // await expect(dialog.approveButton).toBeHidden();
     const login = new LoginPage(page);
-    await expect(login.email).toBeVisible();        // verify page login
+    await login.waitForLoaded();
+    await expect(login.account).toBeVisible();     // verify page login
   });
   
-
   

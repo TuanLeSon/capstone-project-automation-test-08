@@ -2,10 +2,10 @@ import { test, expect } from '@playwright/test';
 import { HomePage } from '../../../ui/pages/home/HomePage';
 import { CinemaClusterSection } from '../../../ui/sections/CinemaClusterSection';
 
-test('HOME_TC16 - Default Cinema Cluster is active', async ({ page }) => {
+test('Default Cinema Cluster is active', async ({ page }) => {
   const home = new HomePage(page);
   await home.open();
-
+  await home.waitForLoaded();
   const cluster = home.cinemaCluster;
   await cluster.waitForLoaded();
   // await expect(cluster.clusterTabs).toHaveCountGreaterThan(0);
@@ -13,40 +13,39 @@ test('HOME_TC16 - Default Cinema Cluster is active', async ({ page }) => {
 });
 
 
-test('HOME_TC17 - Cinema panel updates when switching cinema cluster', async ({ page }) => {
+test('Cinema panel updates when switching cinema cluster', async ({ page }) => {
   const home = new HomePage(page);
   await home.open();
-
-  const cluster = home.cinemaCluster;
-  await cluster.waitForLoaded();
+  home.waitForLoaded();
+  home.topBar.cinemaClusterBtn.click();
+  await expect.poll(async () =>
+    await home.cinemaClusterHeader.evaluate(el => el.getBoundingClientRect().top)
+  ).toBeLessThanOrEqual(61);
+  
 
   // ---------- Arrange ----------
   // Capture initial cinema list snapshot
-  const initialCinemaCount = await cluster.cinemaItems.count();
-  await expect(initialCinemaCount).toBeGreaterThan(0);
+  const initialCinemaCount = await home.cinemaCluster.cinemaItems.count();
+  expect(initialCinemaCount).toBeGreaterThan(0);
 
   // ---------- Act ----------
   // Switch to another cluster tab (index 1)
-  await cluster.selectCluster(1);
+  await home.cinemaCluster.selectCluster(1);
 
   // ---------- Assert ----------
   // New cluster tab should be active
-  await expect(cluster.clusterTab(1)).toHaveAttribute('aria-selected', 'true');
-
-  // Cinema panel still visible
-  console.log(cluster.cinemaPanel.count());
-
+  await expect(home.cinemaCluster.clusterTab(1)).toHaveAttribute('aria-selected', 'true');
 
   // Cinema list should be reloaded (not asserting exact data)
   await expect
-    .poll(async () => await cluster.cinemaItems.count())
+    .poll(async () => await home.cinemaCluster.cinemaItems.count())
     .toBeGreaterThan(0);
 
   // Optional: detect DOM change (non-blocking)
-  const updatedCinemaCount = await cluster.cinemaItems.count();
+  const updatedCinemaCount = await home.cinemaCluster.cinemaItems.count();
   expect(updatedCinemaCount).toBeGreaterThan(0);
 });
-test('HOME_TC18 - Cinema cluster content loads on tab click', async ({ page }) => {
+test('Cinema cluster content loads on tab click', async ({ page }) => {
   const home = new HomePage(page);
   await home.open();
 
@@ -72,7 +71,7 @@ test('HOME_TC18 - Cinema cluster content loads on tab click', async ({ page }) =
     'aria-selected',
     'true'
   );
-  
+
 
   // 2. cinema panel reacts
   await expect(cluster.cinemaPanel).toBeVisible();
@@ -84,44 +83,51 @@ test('HOME_TC18 - Cinema cluster content loads on tab click', async ({ page }) =
   await expect(cluster.showtimePanel).toBeVisible();
 });
 
-test('HOME_TC19 - Showtime updates when cinema is selected', async ({ page }) => {
-    const home = new HomePage(page);
-    await home.open();
+test('Showtime updates when cinema is selected', async ({ page }) => {
+  const home = new HomePage(page);
+  await home.open();
+  await home.waitForLoaded();
+
+  const cluster = home.cinemaCluster;
+  await cluster.waitForLoaded();
+  await home.cinemaCluster.waitForLoaded();
+
+  await home.topBar.cinemaClusterBtn.click();
+
+  await expect.poll(async () =>
+    await home.cinemaClusterHeader.evaluate(el => el.getBoundingClientRect().top)
+  ).toBeLessThanOrEqual(61);
   
-    const cluster = home.cinemaCluster;
-    await cluster.waitForLoaded();
-  
-    // Pre-condition: ensure there are multiple cinemas
-    const cinemaCount = await cluster.cinemaItems.count();
-    console.log(`Cinema count: ${cinemaCount}`);
-    expect(cinemaCount).toBeGreaterThan(1);
-  
-    // Act: select second cinema
-    const targetCinema = cluster.cinemaItems.nth(1);
-    await targetCinema.click();
-  
-    // Assert cinema active
-    await expect(targetCinema).toHaveAttribute('aria-selected', 'true');
-  
-    // Assert showtime panel reacts
-    await expect(cluster.showtimePanel).toBeVisible();
-    await expect.poll(async () => {
-        return await cluster.showtimeItems.count();
-      }).toBeGreaterThan(0);
-  });
-  
-  test('TC20 - Cinema tab shows correct showtime panel', async ({ page }) => {
-    const home = new HomePage(page);
-    await home.open();
-    const cinemaSection = new CinemaClusterSection(page);
-  
-    await cinemaSection.waitForLoaded();
-  
-    // Action
-    await cinemaSection.secondCinemaItem.click();
-  
-    // Assert UI
-    await expect(cinemaSection.activeShowtimePanel).toBeVisible();
-    await expect(cinemaSection.activeShowtimePoster).toBeVisible();
-  });
-  
+  // Pre-condition: ensure there are multiple cinemas
+  const cinemaCount = await home.cinemaCluster.cinemaItems.count();
+  console.log(`Cinema count: ${cinemaCount}`);
+  expect(cinemaCount).toBeGreaterThan(1);
+
+  // Act: select second cinema
+  const targetCinema = home.cinemaCluster.cinemaItems.nth(1);
+  await targetCinema.click();
+
+  // Assert cinema active
+  await expect(targetCinema).toHaveAttribute('aria-selected', 'true');
+
+  // Assert showtime panel reacts
+  await expect(cluster.showtimePanel).toBeVisible();
+  await expect.poll(async () => {
+    return await cluster.showtimeItems.count();
+  }).toBeGreaterThan(0);
+});
+
+test('Cinema tab shows correct showtime panel', async ({ page }) => {
+  const home = new HomePage(page);
+  await home.open();
+  const cinemaSection = new CinemaClusterSection(page);
+
+  await cinemaSection.waitForLoaded();
+
+  // Action
+  await cinemaSection.secondCinemaItem.click();
+
+  // Assert UI
+  await expect(cinemaSection.activeShowtimePanel).toBeVisible();
+  await expect(cinemaSection.activeShowtimePoster).toBeVisible();
+});

@@ -1,6 +1,12 @@
 // src/helpers/testUsers.ts
 export const testUser = {
-    account: "20251228",
+    account: "20251229",
     password: "123456",
-    email: "newUser12@example.com"
+    email: "mika@example.com"
+};
+
+export const testUser2 = {
+    account: "20251230",
+    password: "123456",
+    email: "kami@example.com"
 };

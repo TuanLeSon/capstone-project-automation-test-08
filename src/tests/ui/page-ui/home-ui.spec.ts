@@ -1,7 +1,7 @@
 import { test, expect } from '@playwright/test';
 import { HomePage } from '../../../ui/pages/home/HomePage';
 
-test('HOME_01 - Home page loads successfully', async ({ page }) => {
+test('Home page loads successfully', async ({ page }) => {
   const home = new HomePage(page);
 
   await home.open();
@@ -13,14 +13,14 @@ test('HOME_01 - Home page loads successfully', async ({ page }) => {
   await expect(home.topBar.root).toBeVisible();
 });
 
-test('HOME_02 - Banner section is visible', async ({ page }) => {
+test('Banner section is visible', async ({ page }) => {
   const home = new HomePage(page);
   await home.open();
 
   await expect(home.banner.root).toBeVisible();
 });
 
-test('HOME_03 - Movie list is visible', async ({ page }) => {
+test('Movie list is visible', async ({ page }) => {
   const home = new HomePage(page);
   await home.open();
   await home.showtime.waitForLoaded();
@@ -31,7 +31,7 @@ test('HOME_03 - Movie list is visible', async ({ page }) => {
   expect(movieCount).toBeGreaterThan(0);
 });
 
-test('HOME_TC14_TC15 - Cinema cluster section and tabs are visible', async ({ page }) => {
+test('Cinema cluster section and tabs are visible', async ({ page }) => {
   const home = new HomePage(page);
   await home.open();
 
@@ -47,7 +47,7 @@ test('HOME_TC14_TC15 - Cinema cluster section and tabs are visible', async ({ pa
 
 });
 
-test('HOME_TC21 - App section is visible and has valid CTA', async ({ page, context }) => {
+test('App section is visible and has valid CTA', async ({ page, context }) => {
   const home = new HomePage(page);
   await home.open();
 
@@ -91,12 +91,9 @@ test('Homepage → click "Showtime" scrolls to showtime section', async ({ page 
   await home.topBar.showtimeBtn.click();
 
   // Wait for scroll behavior
-  await page.waitForFunction(() => window.scrollY > 0);
-
-  const afterPosition = await home.showtimeHeader.evaluate(el => el.getBoundingClientRect().top);
-  // console.log("After scroll:", afterPosition);
-
-  expect(afterPosition).toBeLessThanOrEqual(61);
+  await expect.poll(async () =>
+    await home.showtimeHeader.evaluate(el => el.getBoundingClientRect().top)
+  ).toBeLessThanOrEqual(61);
 });
 
 test('Homepage → click "CinemaCluster" scrolls to cinema cluster section', async ({ page }) => {
@@ -115,13 +112,9 @@ test('Homepage → click "CinemaCluster" scrolls to cinema cluster section', asy
   // Click menu
   await home.topBar.cinemaClusterBtn.click();
 
-  // Wait for scroll behavior
-  await page.waitForFunction(() => window.scrollY > 0);
-
-  const afterPosition = await home.cinemaClusterHeader.evaluate(el => el.getBoundingClientRect().top);
-  // console.log("After scroll:", afterPosition);
-
-  expect(afterPosition).toBeLessThanOrEqual(61);
+  await expect.poll(async () =>
+    await home.cinemaClusterHeader.evaluate(el => el.getBoundingClientRect().top)
+  ).toBeLessThanOrEqual(61);
 });
 
 test('Homepage → click "News" scrolls to News section', async ({ page }) => {
@@ -140,13 +133,9 @@ test('Homepage → click "News" scrolls to News section', async ({ page }) => {
   // Click menu
   await home.topBar.newsBtn.click();
 
-  // Wait for scroll behavior
-  await page.waitForFunction(() => window.scrollY > 0);
-
-  const afterPosition = await home.newsHeader.evaluate(el => el.getBoundingClientRect().top);
-  // console.log("After scroll:", afterPosition);
-
-  expect(afterPosition).toBeLessThanOrEqual(61);
+  await expect.poll(async () =>
+    await home.newsHeader.evaluate(el => el.getBoundingClientRect().top)
+  ).toBeLessThanOrEqual(61);
 });
 
 test('Homepage → click "AppSection" scrolls to App section', async ({ page }) => {
@@ -165,11 +154,7 @@ test('Homepage → click "AppSection" scrolls to App section', async ({ page }) 
   // Click menu
   await home.topBar.appBtn.click();
 
-  // Wait for scroll behavior
-  await page.waitForFunction(() => window.scrollY > 0);
-
-  const afterPosition = await home.appSectionHeader.evaluate(el => el.getBoundingClientRect().top);
-  // console.log("After scroll:", afterPosition);
-
-  expect(afterPosition).toBeLessThanOrEqual(61);
+  await expect.poll(async () =>
+    await home.appSectionHeader.evaluate(el => el.getBoundingClientRect().top)
+  ).toBeLessThanOrEqual(61);
 });

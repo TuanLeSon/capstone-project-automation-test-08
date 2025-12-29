@@ -3,7 +3,7 @@
 import { Page, Locator, expect } from '@playwright/test';
 
 export class NewsSection {
-  constructor(private readonly page: Page) {}
+  constructor(private readonly page: Page) { }
 
   /** toàn bộ tabpanel news (simple-tabpanel-0/1/2) */
   panel(index: number): Locator {
@@ -15,14 +15,14 @@ export class NewsSection {
     return this.panel(index).locator('.MuiGrid-root.MuiGrid-item');
   }
 
-    // Element trong card
-    cardImage(index: number): Locator {
-        return this.newsCards(index).locator('img');
-      }
-    
-      cardTitles(index: number): Locator {
-        return this.newsCards(index).locator('a'); // title link thường là <a>
-      }
+  // Element trong card
+  cardImage(index: number): Locator {
+    return this.newsCards(index).locator('img');
+  }
+
+  cardTitles(index: number): Locator {
+    return this.newsCards(index).locator('a'); // title link thường là <a>
+  }
 
   /** toggle button XEM THÊM / RÚT GỌN */
   toggleBtn(): Locator {
@@ -35,8 +35,8 @@ export class NewsSection {
     await expect(btn).toBeVisible();
     await btn.click();
     await expect.poll(async () => {
-        return await btn.innerText();
-      }).toMatch(/RÚT GỌN/i);
+      return await btn.innerText();
+    }).toMatch(/RÚT GỌN/i);
   }
 
   async collapse(index: number) {
@@ -54,13 +54,19 @@ export class NewsSection {
     await expect(this.toggleBtn()).toBeVisible();
   }
 
+  get newsTabList(): Locator {
+    return this.page.locator('.MuiTabs-flexContainer.MuiTabs-centered[role="tablist"]');
+  }
+
+  get tabs() {
+    return this.newsTabList.locator('[role="tab"]');
+  }
+
   async switchPanel(index: number) {
-    const tab = this.page.locator(`#simple-tab-${index}`);
-    await tab.click();
+    await this.tabs.nth(index).click();
     await expect.poll(async () => {
-      return await this.panel(index).getAttribute('aria-hidden');
-    }).toBe('false');
+      return await this.tabs.nth(index).getAttribute('aria-selected');
+    }).toBe('true');
   }
 }
 
-  

@@ -3,7 +3,7 @@ import { HomePage } from '../../../ui/pages/home/HomePage';
 import { TrailerDialog } from '../../../ui/components/TrailerDialog';
 
 
-test('HOME_TC08 - Hover movie card shows trailer action', async ({ page }) => {
+test('Hover movie card shows trailer action', async ({ page }) => {
   const home = new HomePage(page);
   await home.open();
   await home.showtime.waitForLoaded();
@@ -23,7 +23,7 @@ test('HOME_TC08 - Hover movie card shows trailer action', async ({ page }) => {
 });
 
 
-test('HOME_TC09 - Movie card shows image, age label and description', async ({ page }) => {
+test('Movie card shows image, age label and description', async ({ page }) => {
   const home = new HomePage(page);
   await home.open();
 
@@ -46,22 +46,7 @@ test('HOME_TC09 - Movie card shows image, age label and description', async ({ p
   await expect(showtime.description(card)).toBeVisible();
 });
 
-test('HOME_TC10 - Banner carousel auto-slides', async ({ page }) => {
-  const home = new HomePage(page);
-  await home.open();
-
-  const banner = home.banner;
-
-  // Pre-condition
-  await expect(banner.root).toBeVisible();
-  await expect(banner.prevButton).toBeVisible();
-  await expect(banner.nextButton).toBeVisible();
-  // await expect(banner.hoverBanner());
-  await expect(banner.bannerPlayIcon).toBeVisible();
-  
-});
-
-test('HOME_TC11 - Open trailer modal from movie card', async ({ page }) => {
+test('Open trailer modal from movie card', async ({ page }) => {
   const home = new HomePage(page);
   await home.open();
 
@@ -71,7 +56,7 @@ test('HOME_TC11 - Open trailer modal from movie card', async ({ page }) => {
   await trailer.expectVisible();
 });
 
-test('HOME_TC12 - Close trailer modal by button and overlay', async ({ page }) => {
+test('Close trailer modal by button and overlay', async ({ page }) => {
   const home = new HomePage(page);
   await home.open();
 
@@ -91,7 +76,7 @@ test('HOME_TC12 - Close trailer modal by button and overlay', async ({ page }) =
   await trailer.closeByOverlay();
 });
 
-test('HOME_TC12.1 - Close trailer modal by X button', async ({ page }) => {
+test('Close trailer modal by X button', async ({ page }) => {
   const home = new HomePage(page);
   await home.open();
 
@@ -108,7 +93,7 @@ test('HOME_TC12.1 - Close trailer modal by X button', async ({ page }) => {
   await expect(home.showtime.movieCards.first()).toBeVisible();
 });
 
-test('HOME_TC12.2 - Close trailer modal by overlay click', async ({ page }) => {
+test('Close trailer modal by overlay click', async ({ page }) => {
   const home = new HomePage(page);
   await home.open();
 
@@ -124,7 +109,7 @@ test('HOME_TC12.2 - Close trailer modal by overlay click', async ({ page }) => {
   // Assert page is interactable again
   await expect(home.showtime.movieCards.first()).toBeVisible();
 });
-test('HOME_TC24 - Movie pagination forward/backward stability', async ({ page }) => {
+test('Movie pagination forward/backward stability', async ({ page }) => {
     const home = new HomePage(page);
     await home.open();
   

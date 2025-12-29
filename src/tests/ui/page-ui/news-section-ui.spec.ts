@@ -1,7 +1,7 @@
 import { test, expect } from "@playwright/test";
 import { HomePage } from "../../../ui/pages/home/HomePage";
 
-test('HOME_TC22 - Expand/Collapse News section', async ({ page }) => {
+test('Expand/Collapse News section', async ({ page }) => {
     const home = new HomePage(page);
     await home.open();
   
@@ -22,7 +22,7 @@ test('HOME_TC22 - Expand/Collapse News section', async ({ page }) => {
     expect(collapsedCount).toBe(initialCount);
   });
   
-  test('HOME_TC23 - Clicking news card opens detail page in new tab', async ({ context, page }) => {
+  test('Clicking news card opens detail page in new tab', async ({ context, page }) => {
     const home = new HomePage(page);
     await home.open();
     const panelIndex = 0;
@@ -44,10 +44,10 @@ test('HOME_TC22 - Expand/Collapse News section', async ({ page }) => {
     await newPage.waitForLoadState();
     // await expect(newPage).toHaveURL(/http/); // vì external, check pattern thôi
   
-    console.log(`Opened external page: ${await newPage.url()}`);
+    console.log(`Opened external page: ${newPage.url()}`);
   });
 
-  test ('expand then switch tab', async ({ page }) => {
+  test ('Expand then switch tab', async ({ page }) => {
     const home = new HomePage(page);
     await home.open();
     const news = home.newsSection;
@@ -57,16 +57,19 @@ test('HOME_TC22 - Expand/Collapse News section', async ({ page }) => {
     await news.expand();
     const expandedCount = await news.getCardCount(panelIndex);
     console.log(`Expanded card count: ${expandedCount}`);
-
+    await home.topBar.newsBtn.click();
+    await expect.poll(async () =>
+      await home.newsHeader.evaluate(el => el.getBoundingClientRect().top)
+    ).toBeLessThanOrEqual(61);
     // Switch tab
-    const initialActiveTab = news.panel(0);
+    const initialActiveTab = news.tabs.first();
     await expect(initialActiveTab).toHaveAttribute('aria-selected', 'true');
 
     // Switch to second tab
     await news.switchPanel(1);
 
     // Assert tab switched
-    const newTabPanel = news.panel(2);
+    const newTabPanel = news.tabs.nth(1);
     await expect(newTabPanel).toHaveAttribute('aria-selected', 'true');
     await expect(news.toggleBtn()).toHaveText(/XEM THÊM/i); // vẫn ở trạng thái expanded
   });

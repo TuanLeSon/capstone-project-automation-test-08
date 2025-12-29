@@ -2,13 +2,13 @@ import { test, expect } from '@playwright/test';
 import { HomePage } from '../../../ui/pages/home/HomePage';
 import { MovieDetailPage } from '../../../ui/pages/booking/MovieDetailPage';
 import { TrailerDialog } from '../../../ui/components/TrailerDialog';
-import { SeatPlanPage } from '../../../ui/pages/booking/SeatPlanPage';
 
 test.describe('UI - Movie Detail Page', () => {
 
     test.beforeEach(async ({ page }) => {
         const home = new HomePage(page);
         await home.open();
+        await home
         await home.showtime.clickRandomMovieBuyTicket(); // Mở trang chi tiết phim đầu tiên
     });
 
@@ -16,6 +16,7 @@ test.describe('UI - Movie Detail Page', () => {
         const detail = new MovieDetailPage(page);
         // await detail.openAny();
         await expect(detail.poster).toBeVisible();
+        await detail.poster.hover();
         await expect(detail.watchTrailerBtn).toBeVisible();
         await expect(detail.showtimeItems.first()).toBeVisible();
       });
