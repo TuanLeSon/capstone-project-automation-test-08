@@ -71,6 +71,7 @@ It supports:
 │ └── workflows/playwright-ci.yml
 ├── package.json
 └── README.md
+
 ## 📦 Prerequisites
 
 ✔ Node.js >= 16.14  
