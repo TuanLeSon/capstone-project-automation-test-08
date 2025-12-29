@@ -1,11 +1,12 @@
 /* =====================================================
-src/ui/pages/auth/AccountPage.ts
+AccountPage.ts
 ===================================================== */
 import { CommonPage } from '../common/CommonPage';
 import { expect } from '@playwright/test';
 
 
 export class AccountPage extends CommonPage {
+
     get username() { return this.page.getByRole('textbox', { name: 'Tài Khoản' }); }
     get password() { return this.page.getByRole('textbox', { name: 'Mật Khẩu' }); }
     get confirmPassword() { return this.page.getByRole('textbox', { name: 'Nhập lại mật khẩu' }); }
@@ -27,7 +28,37 @@ export class AccountPage extends CommonPage {
     get phoneValidationMsg() { return this.page.getByText('Vui lòng nhập số điện thoại'); }
     get ticketHistory() { return this.page.getByRole('heading', { name: 'Lịch sử đặt vé' }); }
     get tickets() { return this.page.getByText('Ngày đặt: 16-11-2025 | 14:37T'); }
-    get root() { return this.page.locator('#account'); }
+    get root() { return this.page.getByRole('main'); }
     get name() { return this.root.locator('.display-name'); }
     async waitForLoaded() { await expect(this.root).toBeVisible(); }
+    get bookingHistory_root() { return this.page.locator('.MuiTypography-root .MuiTypography-h1').nth(1); }
+    // Root booking history list container
+    get bookingHistory() { return this.page.locator('h1.MuiTypography-h1'); }
+
+    // Một item vé (mỗi block chứa thông tin film)
+    get bookings() {
+        return this.page.locator('.MuiGrid-root.MuiGrid-item');
+    }
+
+    // lấy item theo tên film
+    bookingItem(movie: string) {
+        return this.bookings.filter({ hasText: movie });
+    }
+
+    async expectBookingExists(movie: string) {
+        await expect(this.bookingItem(movie)).toBeVisible();
+    }
+
+    async updateAccount(data) {
+        await this.fill(this.password, data.password);
+        await this.fill(this.fullName, data.fullName);
+        await this.fill(this.email, data.email);
+        await this.fill(this.phone, data.phone);
+        await this.click(this.update);
+    }
+
+    async open() {
+        await this.smartNavigate('/account', '/account');
+        await this.waitForLoaded();
+    }
 }

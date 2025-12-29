@@ -6,7 +6,9 @@ export class WarningDialog extends CommonPage {
     get title() { return this.root.locator('h2'); }
     get message() { return this.root.locator('#swal2-content'); }
     get closeButton() { return this.root.getByRole('button', { name: 'Đã hiểu' }); }
-
+    get approveButton() { return this.root.getByRole('button', { name: 'Đồng ý' }); }
+    get rejectButton() { return this.root.getByRole('button', { name: 'Không' }); }
+    get cancelButton() { return this.root.getByRole('button', { name: 'Hủy' }); }
     async waitForLoaded() { await expect(this.root).toBeVisible(); }
     async close() { await this.click(this.closeButton); }
 

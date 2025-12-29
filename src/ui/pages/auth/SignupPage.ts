@@ -16,20 +16,25 @@ export class SignupPage extends CommonPage {
 
     get viewPasswordBtn() { return this.page.locator('button').filter({ hasText: 'visibility' }).first(); }
     get viewConfirmPasswordBtn() { return this.page.locator('button').filter({ hasText: 'visibility' }).nth(1); }
-
-    get accountValidationMsg() { return this.page.locator('#taiKhoan-helper-text');}
-    get passwordValidationMsg() { return this.page.locator('#matKhau-helper-text');}
-    get confirmPasswordValidationMsg() { return this.page.locator('#confirmPassWord-helper-text');}
-    get userNameValidationMsg() { return this.page.locator('#hoTen-helper-text');}
-    get emailValidationMsg() { return this.page.locator('#email-helper-text');}
-    get signUpMsg() {return this.page.getByRole('heading', { name: 'Đăng ký thành công' });}
+    get alertMsg() { return this.page.getByRole('alert'); }
+    get accountValidationMsg() { return this.page.locator('#taiKhoan-helper-text'); }
+    get passwordValidationMsg() { return this.page.locator('#matKhau-helper-text'); }
+    get confirmPasswordValidationMsg() { return this.page.locator('#confirmPassWord-helper-text'); }
+    get userNameValidationMsg() { return this.page.locator('#hoTen-helper-text'); }
+    get emailValidationMsg() { return this.page.locator('#email-helper-text'); }
+    get signUpMsg() { return this.page.getByRole('heading', { name: 'Đăng ký thành công' }); }
     async waitForLoaded() { await expect(this.root).toBeVisible(); }
-    async submitSignup(data) { 
+    async submitSignup(data) {
         await this.fill(this.username, data.username);
         await this.fill(this.password, data.password);
         await this.fill(this.confirmPassword, data.confirmPassword);
         await this.fill(this.fullName, data.fullName);
-        await this.fill(this.email, data.email); 
-        await this.click(this.submit); 
+        await this.fill(this.email, data.email);
+        await this.click(this.submit);
+    }
+
+    async open() {
+        await this.smartNavigate('/sign-up', '/sign-up');
+        await this.waitForLoaded();
     }
 }
