@@ -1,5 +1,6 @@
 import { test, expect } from '@playwright/test';
 import { HomePage } from '../../../ui/pages/home/HomePage';
+import { LoginPage } from '../../../ui/pages/auth/LoginPage';
 
 test('Home page loads successfully', async ({ page }) => {
   const home = new HomePage(page);
@@ -157,4 +158,24 @@ test('Homepage → click "AppSection" scrolls to App section', async ({ page }) 
   await expect.poll(async () =>
     await home.appSectionHeader.evaluate(el => el.getBoundingClientRect().top)
   ).toBeLessThanOrEqual(61);
+});
+
+test ('Click logo navigates to homepage', async ({ page }) => {
+  const home = new HomePage(page);
+
+  // 1. Mở homepage
+  await home.open();
+  await home.showtime.waitForLoaded();
+
+  // 2. Điều hướng sang trang khác (Cinema Cluster)
+  const login = new LoginPage(page);
+  await login.open();
+  await login.waitForLoaded();
+
+  // 3. Click logo
+  await home.topBar.logoBtn.click();
+
+  // Assert về homepage
+  await expect(page).toHaveURL(/cybersoft\.edu\.vn/);
+  await home.showtime.waitForLoaded();
 });

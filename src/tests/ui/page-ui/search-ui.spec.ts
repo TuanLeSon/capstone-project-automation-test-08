@@ -115,3 +115,19 @@ test('Warning pop-up if user click buy ticket but yet to select date', async ({ 
   await dialog.close();
   await dialog.expectClosed();
 });
+
+test('Successful search navigates to Movie Detail page', async ({ page }) => {
+  const home = new HomePage(page);
+  await home.open();
+  await home.showtime.waitForLoaded(); // ensure home loaded
+  const search = home.search;
+
+  await search.selectAnyFilm();
+  await search.selectAnyCinema();
+  await search.selectAnyDate();
+
+  await search.clickBuyTicket();
+
+  // Assert navigation to Movie Detail page
+  await expect(page).toHaveURL(/\/purchase\/\d+/);
+});

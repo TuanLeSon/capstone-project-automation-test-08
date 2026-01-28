@@ -64,4 +64,8 @@ export class AccountPage extends CommonPage {
         await this.smartNavigate('/account', '/account');
         await this.waitForLoaded();
     }
+
+    async getNumberOfBookings() {
+        return await this.bookings.count();
+    }
 }

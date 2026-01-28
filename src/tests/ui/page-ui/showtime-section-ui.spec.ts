@@ -18,7 +18,7 @@ test('Hover movie card shows trailer action', async ({ page }) => {
   await showtime.hoverMovieCard(0);
   // await showtime.clickBuyTicketOnMovieCard(card);
   // Assert overlay OR play icon xuất hiện
-  await expect(showtime.movieBuyTicket(card)).toBeVisible();
+  await expect(showtime.movieBuyTicket(card).first()).toBeVisible();
   await expect(showtime.moviePlayIcon(card)).toBeVisible();
 });
 

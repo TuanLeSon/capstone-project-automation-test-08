@@ -26,7 +26,7 @@ test.beforeEach(async ({ page }) => {
 test('Ticket section sync after seat selected', async ({ page }) => {
     const seat = new SeatPlanPage(page);
   
-    const chosen = await seat.pickFirstAvailableSeat();
+    const chosen = await seat.pickAvailableSeat(1);
     await expect(seat.selectedSeatList).toContainText(chosen);
     await expect(seat.ticketPrice).not.toHaveText('0VND');
   });
@@ -34,7 +34,7 @@ test('Ticket section sync after seat selected', async ({ page }) => {
   test('Booking requires login', async ({ page }) => {
     const seat = new SeatPlanPage(page);
   
-    await seat.pickFirstAvailableSeat();
+    await seat.pickAvailableSeat(2);
     await seat.book();
     const dialog = new WarningDialog(page);
     await dialog.waitForLoaded();

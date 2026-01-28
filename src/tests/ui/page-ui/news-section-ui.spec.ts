@@ -7,7 +7,8 @@ test('Expand/Collapse News section', async ({ page }) => {
   
     const news = home.newsSection;
     const panelIndex = 0; // panel đầu tiên – nếu cần sẽ loop sau
-  
+    home.topBar.newsBtn.click();
+    news.waitForLoaded();
     // Lúc đầu thu gọn → card ít hơn
     const initialCount = await news.getCardCount(panelIndex);
   

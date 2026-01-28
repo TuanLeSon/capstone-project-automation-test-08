@@ -16,6 +16,7 @@ get showtimeBtn() { return this.page.locator('a').filter({ hasText: 'Lịch Chi�
 get cinemaClusterBtn() { return this.page.locator('a').filter({ hasText: 'Cụm Rạp' }); }
 get newsBtn() { return this.page.locator('a').filter({ hasText: 'Tin Tức' }); }
 get appBtn() { return this.page.locator('a').filter({ hasText: 'Ứng Dụng' }); }
+get logoBtn() { return this.page.getByRole('img', { name: 'Logo', exact: true }); }
 
 async goToAccount() { await this.account.click(); }
 async goToLogin() { await this.login.click(); }

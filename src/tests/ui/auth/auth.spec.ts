@@ -57,3 +57,26 @@ test('signout -> redirect to home and topbar shows login', async ({ page }) => {
   await home.waitForLoaded();
   await expect(home.topBar.login).toBeVisible();
 });
+
+test ('sign up check film history', async ({ page }) => {
+  const home = new HomePage(page);
+  const popup = new WarningDialog(page);
+  await home.open();
+  await home.topBar.goToSignup();
+  const SignupPage = (await import('../../../ui/pages/auth/SignupPage')).SignupPage;
+  const signup = new SignupPage(page);
+  const u = generateUser('ui');
+  await signup.waitForLoaded();
+  await signup.submitSignup(u);
+  const LoginPage = (await import('../../../ui/pages/auth/LoginPage')).LoginPage;
+  const account = new LoginPage(page);
+  await popup.waitForLoaded();
+  // await popup.approveButton.click();
+  try { await account.waitForLoaded(); } catch { await expect(home.topBar.account).toBeVisible(); }
+
+  await home.topBar.goToAccount();
+  const AccountPage = (await import('../../../ui/pages/auth/AccountPage')).AccountPage;
+  const accountPage = new AccountPage(page);
+  await accountPage.waitForLoaded();
+  await expect(accountPage.getNumberOfBookings()).toBe(0);
+});

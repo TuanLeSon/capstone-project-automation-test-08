@@ -1,8 +1,8 @@
 // src/helpers/testUsers.ts
 export const testUser = {
-    account: "20251229",
+    account: "20251235",
     password: "123456",
-    email: "mika@example.com"
+    email: "ittest@example.com"
 };
 
 export const testUser2 = {
